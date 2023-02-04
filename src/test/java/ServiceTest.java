@@ -36,7 +36,7 @@ public class ServiceTest {
 
         assertEquals("result fallback", service.serviceMethod());
 
-        assertEquals(getHandledThrowable().getClass(), TimeoutException.class);
+        assertEquals(getThrowableHandledByFallbackHandler().getClass(), TimeoutException.class);
     }
 
     @Test
@@ -47,13 +47,13 @@ public class ServiceTest {
 
         assertEquals("result fallback", service.serviceMethod());
 
-        assertEquals(getHandledThrowable().getClass(), NullPointerException.class);
+        assertEquals(getThrowableHandledByFallbackHandler().getClass(), NullPointerException.class);
     }
 
-    private Throwable getHandledThrowable() {
-        ArgumentCaptor<ExecutionContext> fallbackHandlerCaptor = ArgumentCaptor.forClass(ExecutionContext.class);
-        Mockito.verify(serviceFallbackHandler).handle(fallbackHandlerCaptor.capture());
-        Throwable failure = fallbackHandlerCaptor.getValue().getFailure();
+    private Throwable getThrowableHandledByFallbackHandler() {
+        ArgumentCaptor<ExecutionContext> executionContextArgumentCaptor = ArgumentCaptor.forClass(ExecutionContext.class);
+        Mockito.verify(serviceFallbackHandler).handle(executionContextArgumentCaptor.capture());
+        Throwable failure = executionContextArgumentCaptor.getValue().getFailure();
         return failure;
     }
 
