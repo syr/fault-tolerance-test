@@ -8,7 +8,7 @@ import javax.enterprise.context.ApplicationScoped;
 public class Service {
 
     @Timeout(1000)
-    @Fallback(MyFallbackHandler.class)
+    @Fallback(ServiceFallbackHandler.class)
     public String serviceMethod() {
         Log.info("starting long running method");
         String result = serviceMethodLongRunning();

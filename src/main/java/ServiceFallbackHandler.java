@@ -5,10 +5,10 @@ import org.eclipse.microprofile.faulttolerance.FallbackHandler;
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class MyFallbackHandler implements FallbackHandler<String> {
+public class ServiceFallbackHandler implements FallbackHandler<String> {
     @Override
     public String handle(ExecutionContext executionContext) {
-        Log.info("started fallback handling, cause: " + executionContext.getFailure().getMessage());
+        Log.info("started fallback handling. Cause: ", executionContext.getFailure());
         return "result fallback";
     }
 }
