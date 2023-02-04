@@ -2,9 +2,11 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectSpy;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.AdditionalAnswers;
 import org.mockito.Mockito;
-import org.mockito.internal.stubbing.answers.AnswersWithDelay;
-import org.mockito.internal.stubbing.answers.Returns;
+import org.mockito.stubbing.Answer;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
 public class ServiceTest {
@@ -18,18 +20,22 @@ public class ServiceTest {
     @Test
     public void testServiceFallback_TimeoutNotExceeded() {
 
-        Mockito.doAnswer( new AnswersWithDelay( 500,  new Returns("result mock")) )
+        Mockito.doAnswer(delayed("result mock", 500))
                 .when(service).serviceMethodLongRunning();
 
-        Assertions.assertEquals("result mock", service.serviceMethod());
+        assertEquals("result mock", service.serviceMethod());
     }
 
     @Test
     public void testServiceFallback_TimeoutExceeded() {
 
-        Mockito.doAnswer( new AnswersWithDelay( 2000,  new Returns("result mock")) )
+        Mockito.doAnswer(delayed("result mock", 2000))
                 .when(service).serviceMethodLongRunning();
 
-        Assertions.assertEquals("result fallback", service.serviceMethod());
+        assertEquals("result fallback", service.serviceMethod());
+    }
+
+    private static Answer<String> delayed(String str, int delayMillis) {
+        return AdditionalAnswers.answersWithDelay(delayMillis, invocation -> str);
     }
 }
